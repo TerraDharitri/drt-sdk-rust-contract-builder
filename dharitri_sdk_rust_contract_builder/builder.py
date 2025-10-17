@@ -10,24 +10,19 @@ from dharitri_sdk_rust_contract_builder.build_metadata import BuildMetadata
 from dharitri_sdk_rust_contract_builder.build_options import BuildOptions
 from dharitri_sdk_rust_contract_builder.build_outcome import BuildOutcome
 from dharitri_sdk_rust_contract_builder.cargo_toml import (
-    ensure_no_change_within_cargo_lock_files, gather_cargo_lock_files,
-    get_contract_name_and_version)
-from dharitri_sdk_rust_contract_builder.codehash import \
-    generate_code_hash_artifact
-from dharitri_sdk_rust_contract_builder.constants import (
-    CONTRACT_CONFIG_FILENAME, MAX_PACKAGED_SOURCE_CODE_SIZE)
+    ensure_no_change_within_cargo_lock_files,
+    gather_cargo_lock_files,
+    get_contract_name_and_version,
+)
+from dharitri_sdk_rust_contract_builder.codehash import generate_code_hash_artifact
+from dharitri_sdk_rust_contract_builder.constants import CONTRACT_CONFIG_FILENAME, MAX_PACKAGED_SOURCE_CODE_SIZE
 from dharitri_sdk_rust_contract_builder.errors import ErrKnown
-from dharitri_sdk_rust_contract_builder.filesystem import \
-    find_files_in_folder
-from dharitri_sdk_rust_contract_builder.packaged_source_code import (
-    PackagedSourceCode, PackagedSourceMetadata)
+from dharitri_sdk_rust_contract_builder.filesystem import find_files_in_folder
+from dharitri_sdk_rust_contract_builder.packaged_source_code import PackagedSourceCode, PackagedSourceMetadata
 
 
 def build_project(
-    project_folder: Path,
-    parent_output_folder: Path,
-    metadata: BuildMetadata,
-    options: BuildOptions
+    project_folder: Path, parent_output_folder: Path, metadata: BuildMetadata, options: BuildOptions
 ) -> BuildOutcome:
     project_folder = project_folder.expanduser().resolve()
     parent_output_folder = parent_output_folder.expanduser().resolve()
@@ -75,7 +70,7 @@ def build_project(
             output_folder=output_subfolder,
             build_metadata=metadata.to_dict(),
             build_options=options.to_dict(),
-            package_filename=f"{contract_name}-{contract_version}.source.json"
+            package_filename=f"{contract_name}-{contract_version}.source.json",
         )
 
         outcome.gather_artifacts(contract_build_subfolder, output_subfolder)
@@ -83,8 +78,7 @@ def build_project(
     cargo_lock_files_after_build = gather_cargo_lock_files(project_within_build_folder)
 
     ensure_no_change_within_cargo_lock_files(
-        files_before_build=cargo_lock_files_before_build,
-        files_after_build=cargo_lock_files_after_build
+        files_before_build=cargo_lock_files_before_build, files_after_build=cargo_lock_files_after_build
     )
 
     return outcome
@@ -117,10 +111,7 @@ def copy_project_folder_to_build_folder(project_folder: Path, build_root_folder:
     shutil.rmtree(build_root_folder, ignore_errors=True)
     build_root_folder.mkdir(parents=True, exist_ok=True)
 
-    shutil.copytree(
-        project_folder, build_root_folder,
-        dirs_exist_ok=True, symlinks=True, ignore_dangling_symlinks=True
-    )
+    shutil.copytree(project_folder, build_root_folder, dirs_exist_ok=True, symlinks=True, ignore_dangling_symlinks=True)
 
     return build_root_folder
 
@@ -168,12 +159,12 @@ def build_contract(build_folder: Path, output_folder: Path, cargo_target_dir: Pa
 
 
 def create_packaged_source_code(
-        parent_project_folder: Path,
-        contract_folder: Path,
-        output_folder: Path,
-        build_metadata: Dict[str, Any],
-        build_options: Dict[str, Any],
-        package_filename: str
+    parent_project_folder: Path,
+    contract_folder: Path,
+    output_folder: Path,
+    build_metadata: Dict[str, Any],
+    build_options: Dict[str, Any],
+    package_filename: str,
 ):
     source_code_files = source_code.get_source_code_files(
         project_folder=parent_project_folder,
@@ -198,5 +189,7 @@ def create_packaged_source_code(
 
 
 def warn_file_too_large(path: Path, size: int, max_size: int):
-    logging.warning(f"""File is too large (this might cause issues with using downstream applications, such as the contract build verification services):
-file = {path}, size = {size}, maximum size = {max_size}""")
+    logging.warning(
+        f"""File is too large (this might cause issues with using downstream applications, such as the contract build verification services):
+file = {path}, size = {size}, maximum size = {max_size}"""
+    )

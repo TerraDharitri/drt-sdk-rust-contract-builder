@@ -8,9 +8,9 @@ from integration_tests.shared import download_project_repository, run_docker
 
 
 def main(cli_args: List[str]):
-    repository_url = "https://github.com/TerraDharitri/drt-sovereign-sc"
+    repository_url = "https://github.com/TerraDharitri/drt-sc-sovereign"
     commit = "e9a4f1fc8d963d48cbce0fb0cf673621cc0832ac"
-    archive_subfolder = f"drt-sovereign-sc-{commit}"
+    archive_subfolder = f"drt-sc-sovereign-{commit}"
     project_path = download_project_repository(f"{repository_url}/archive/{commit}.zip", archive_subfolder)
     project_path = project_path / archive_subfolder
 
@@ -22,9 +22,8 @@ def main(cli_args: List[str]):
 
 
 def check_project_folder_and_packaged_src_are_equivalent(
-        project_path: Path,
-        parent_output_folder: Path,
-        contracts: List[str]):
+    project_path: Path, parent_output_folder: Path, contracts: List[str]
+):
     for contract in contracts:
         output_using_project = parent_output_folder / "using-project" / contract
         output_using_packaged_src = parent_output_folder / "using-packaged-src" / contract
@@ -40,7 +39,7 @@ def check_project_folder_and_packaged_src_are_equivalent(
             packaged_src_path=None,
             contract_name=contract,
             image="sdk-rust-contract-builder:next",
-            output_folder=output_using_project
+            output_folder=output_using_project,
         )
 
         assert code == 0
@@ -52,7 +51,7 @@ def check_project_folder_and_packaged_src_are_equivalent(
             packaged_src_path=packaged_src_path,
             contract_name=contract,
             image="sdk-rust-contract-builder:next",
-            output_folder=output_using_packaged_src
+            output_folder=output_using_packaged_src,
         )
 
         assert code == 0

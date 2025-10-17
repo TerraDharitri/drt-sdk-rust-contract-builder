@@ -1,4 +1,3 @@
-
 import base64
 import json
 import sys
@@ -20,11 +19,7 @@ class ISourceCodeFile(Protocol):
 
 class PackagedSourceMetadata:
     def __init__(
-        self,
-        contract_name: str,
-        contract_version: str,
-        build_metadata: Dict[str, Any],
-        build_options: Dict[str, Any]
+        self, contract_name: str, contract_version: str, build_metadata: Dict[str, Any], build_options: Dict[str, Any]
     ):
         self.contract_name = contract_name
         self.contract_version = contract_version
@@ -40,16 +35,16 @@ class PackagedSourceMetadata:
         }
 
     @classmethod
-    def from_dict_v1(cls, data: Dict[str, Any]) -> 'PackagedSourceMetadata':
+    def from_dict_v1(cls, data: Dict[str, Any]) -> "PackagedSourceMetadata":
         return PackagedSourceMetadata(
             contract_name=data.get("name", "untitled"),
             contract_version=data.get("version", "0.0.0"),
             build_metadata={},
-            build_options={}
+            build_options={},
         )
 
     @classmethod
-    def from_dict_v2(cls, data: Dict[str, Any]) -> 'PackagedSourceMetadata':
+    def from_dict_v2(cls, data: Dict[str, Any]) -> "PackagedSourceMetadata":
         return PackagedSourceMetadata(
             contract_name=data.get("contractName", "untitled"),
             contract_version=data.get("contractVersion", "0.0.0"),
@@ -60,24 +55,24 @@ class PackagedSourceMetadata:
 
 class PackagedSourceCode:
     def __init__(
-            self,
-            version: str,
-            metadata: PackagedSourceMetadata,
-            entries: Sequence['PackagedSourceCodeEntry'],
+        self,
+        version: str,
+        metadata: PackagedSourceMetadata,
+        entries: Sequence["PackagedSourceCodeEntry"],
     ) -> None:
         self.version = version
         self.metadata = metadata
         self.entries = entries
 
     @classmethod
-    def from_file(cls, path: Path) -> 'PackagedSourceCode':
+    def from_file(cls, path: Path) -> "PackagedSourceCode":
         with open(path, "r") as f:
             data: Dict[str, Any] = json.load(f)
 
         return PackagedSourceCode.from_dict(data)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'PackagedSourceCode':
+    def from_dict(cls, data: Dict[str, Any]) -> "PackagedSourceCode":
         schema_version = data.get("schemaVersion", SCHEMA_VERSION_V1)
         if schema_version == SCHEMA_VERSION_V1:
             metadata_raw = data
@@ -96,11 +91,8 @@ class PackagedSourceCode:
 
     @classmethod
     def from_filesystem(
-        cls,
-        metadata: PackagedSourceMetadata,
-        project_folder: Path,
-        source_code_files: Sequence[ISourceCodeFile]
-    ) -> 'PackagedSourceCode':
+        cls, metadata: PackagedSourceMetadata, project_folder: Path, source_code_files: Sequence[ISourceCodeFile]
+    ) -> "PackagedSourceCode":
         entries: List[PackagedSourceCodeEntry] = []
 
         for file in source_code_files:
@@ -126,21 +118,13 @@ class PackagedSourceCode:
     def to_dict(self) -> Dict[str, Any]:
         entries = [entry.to_dict() for entry in self.entries]
 
-        return {
-            "schemaVersion": self.version,
-            "metadata": self.metadata.to_dict(),
-            "entries": entries
-        }
+        return {"schemaVersion": self.version, "metadata": self.metadata.to_dict(), "entries": entries}
 
 
 class PackagedSourceCodeEntry:
-    def __init__(self,
-                 path: Path,
-                 content: bytes,
-                 module: Optional[Path],
-                 dependency_depth: int,
-                 is_test_file: bool
-                 ) -> None:
+    def __init__(
+        self, path: Path, content: bytes, module: Optional[Path], dependency_depth: int, is_test_file: bool
+    ) -> None:
         self.path = path
         self.content = content
         self.module = module
@@ -148,7 +132,7 @@ class PackagedSourceCodeEntry:
         self.is_test_file = is_test_file
 
     @classmethod
-    def from_dict(cls, dict: Dict[str, Any]) -> 'PackagedSourceCodeEntry':
+    def from_dict(cls, dict: Dict[str, Any]) -> "PackagedSourceCodeEntry":
         path = Path(dict.get("path", ""))
         content = base64.b64decode(dict.get("content", ""))
         module = Path(dict.get("module", ""))
@@ -158,7 +142,9 @@ class PackagedSourceCodeEntry:
         return PackagedSourceCodeEntry(path, content, module, dependency_depth, is_test_file)
 
     @classmethod
-    def from_source_code_file(cls, project_folder: Path, source_code_file: ISourceCodeFile) -> 'PackagedSourceCodeEntry':
+    def from_source_code_file(
+        cls, project_folder: Path, source_code_file: ISourceCodeFile
+    ) -> "PackagedSourceCodeEntry":
         path = source_code_file.path.relative_to(project_folder)
         content = Path(source_code_file.path).read_bytes()
         module = source_code_file.module.relative_to(project_folder) if source_code_file.module else None
@@ -173,7 +159,7 @@ class PackagedSourceCodeEntry:
             "content": base64.b64encode(self.content).decode(),
             "module": str(self.module),
             "dependencyDepth": self.dependency_depth,
-            "isTestFile": self.is_test_file
+            "isTestFile": self.is_test_file,
         }
 
         return data
