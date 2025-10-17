@@ -10,11 +10,9 @@ from typing import List
 from dharitri_sdk_rust_contract_builder import builder
 from dharitri_sdk_rust_contract_builder.build_metadata import BuildMetadata
 from dharitri_sdk_rust_contract_builder.build_options import BuildOptions
-from dharitri_sdk_rust_contract_builder.constants import (
-    DEFAULT_BUILD_ROOT, HARDCODED_UNWRAP_FOLDER)
+from dharitri_sdk_rust_contract_builder.constants import DEFAULT_BUILD_ROOT, HARDCODED_UNWRAP_FOLDER
 from dharitri_sdk_rust_contract_builder.errors import ErrKnown
-from dharitri_sdk_rust_contract_builder.packaged_source_code import \
-    PackagedSourceCode
+from dharitri_sdk_rust_contract_builder.packaged_source_code import PackagedSourceCode
 
 
 def main(cli_args: List[str]):
@@ -24,13 +22,28 @@ def main(cli_args: List[str]):
 
     parser = ArgumentParser()
     parser.add_argument("--project", type=str, required=False, help="source code folder (project)")
-    parser.add_argument("--package-whole-project-src", action="store_true", default=False, help="deprecated parameter, not used anymore")
+    parser.add_argument(
+        "--package-whole-project-src", action="store_true", default=False, help="deprecated parameter, not used anymore"
+    )
     parser.add_argument("--packaged-src", type=str, required=False, help="source code packaged in a JSON file")
-    parser.add_argument("--contract", type=str, required=False, help="contract to build (contract name, as found in Cargo.toml)")
+    parser.add_argument(
+        "--contract", type=str, required=False, help="contract to build (contract name, as found in Cargo.toml)"
+    )
     parser.add_argument("--output", type=str, required=True)
-    parser.add_argument("--no-wasm-opt", action="store_true", default=False, help="do not optimize wasm files after the build (default: %(default)s)")
+    parser.add_argument(
+        "--no-wasm-opt",
+        action="store_true",
+        default=False,
+        help="do not optimize wasm files after the build (default: %(default)s)",
+    )
     parser.add_argument("--cargo-target-dir", type=str, required=True, help="Cargo's target-dir")
-    parser.add_argument("--build-root", type=str, default=DEFAULT_BUILD_ROOT, required=False, help="root path (within container) for the build (default: %(default)s)")
+    parser.add_argument(
+        "--build-root",
+        type=str,
+        default=DEFAULT_BUILD_ROOT,
+        required=False,
+        help="root path (within container) for the build (default: %(default)s)",
+    )
 
     parsed_args = parser.parse_args(cli_args)
     project_path = Path(parsed_args.project).expanduser().resolve() if parsed_args.project else None

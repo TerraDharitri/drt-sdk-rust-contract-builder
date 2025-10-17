@@ -32,7 +32,9 @@ def gather_cargo_lock_files(folder: Path) -> List[CargoLockFile]:
     return files
 
 
-def ensure_no_change_within_cargo_lock_files(files_before_build: List[CargoLockFile], files_after_build: List[CargoLockFile]):
+def ensure_no_change_within_cargo_lock_files(
+    files_before_build: List[CargoLockFile], files_after_build: List[CargoLockFile]
+):
     """
     Ensure there are no changes within Cargo.lock files during build.
 

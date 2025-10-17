@@ -1,12 +1,9 @@
-
 import json
 from pathlib import Path
 from typing import Any, Dict, Protocol
 
-from dharitri_sdk_rust_contract_builder.cargo_toml import \
-    get_contract_name_and_version
-from dharitri_sdk_rust_contract_builder.filesystem import (
-    find_file_in_folder, find_files_in_folder)
+from dharitri_sdk_rust_contract_builder.cargo_toml import get_contract_name_and_version
+from dharitri_sdk_rust_contract_builder.filesystem import find_file_in_folder, find_files_in_folder
 
 
 class IWithToDict(Protocol):
@@ -23,7 +20,7 @@ class BuildOutcome:
         entries = BuildOutcomeEntry.many_from_folders(build_folder, output_subfolder)
         self.contracts.update(entries)
 
-    def get_entry(self, contract_name: str) -> 'BuildOutcomeEntry':
+    def get_entry(self, contract_name: str) -> "BuildOutcomeEntry":
         return self.contracts[contract_name]
 
     def save_to_file(self, file: Path):
@@ -41,7 +38,7 @@ class BuildOutcome:
         return {
             "buildMetadata": self.build_metadata.to_dict(),
             "buildOptions": self.build_options.to_dict(),
-            "contracts": contracts
+            "contracts": contracts,
         }
 
 
@@ -54,7 +51,7 @@ class BuildOutcomeEntry:
         self.src_package_path = BuildArtifact(Path(""))
 
     @classmethod
-    def many_from_folders(cls, build_folder: Path, output_folder: Path) -> Dict[str, 'BuildOutcomeEntry']:
+    def many_from_folders(cls, build_folder: Path, output_folder: Path) -> Dict[str, "BuildOutcomeEntry"]:
         # Note: sub-contracts of multi-contracts share the same version.
         _, version = get_contract_name_and_version(build_folder)
 
@@ -84,7 +81,7 @@ class BuildOutcomeEntry:
                 "bytecode": self.bytecode_path.path.name,
                 "abi": self.abi_path.path.name,
                 "srcPackage": self.src_package_path.path.name,
-            }
+            },
         }
 
 
@@ -93,7 +90,7 @@ class BuildArtifact:
         self.path = path
 
     @classmethod
-    def find_in_output(cls, name_pattern: str, output_folder: Path) -> 'BuildArtifact':
+    def find_in_output(cls, name_pattern: str, output_folder: Path) -> "BuildArtifact":
         path = find_file_in_folder(output_folder, name_pattern)
         return BuildArtifact(path)
 

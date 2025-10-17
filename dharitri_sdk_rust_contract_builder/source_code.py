@@ -1,4 +1,3 @@
-
 import json
 import logging
 import subprocess
@@ -6,17 +5,15 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-from dharitri_sdk_rust_contract_builder.constants import (
-    CONTRACT_CONFIG_FILENAME, SC_META_LOCAL_DEPS_FILENAME)
+from dharitri_sdk_rust_contract_builder.constants import CONTRACT_CONFIG_FILENAME, SC_META_LOCAL_DEPS_FILENAME
 from dharitri_sdk_rust_contract_builder.errors import ErrKnown
 from dharitri_sdk_rust_contract_builder.filesystem import get_all_files
-from dharitri_sdk_rust_contract_builder.source_code_file import \
-    SourceCodeFile
+from dharitri_sdk_rust_contract_builder.source_code_file import SourceCodeFile
 
 
 def get_source_code_files(
-        project_folder: Path,
-        contract_folder: Path,
+    project_folder: Path,
+    contract_folder: Path,
 ) -> List[SourceCodeFile]:
     """
     Returns the source code files of the specified contract.
